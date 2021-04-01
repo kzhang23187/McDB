@@ -1,0 +1,19 @@
+{
+  "name": "mcdb",
+  "version": "1.0.0",
+  "description": "# Stage 1 This project is composed by two parts:The frontend and the backend.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kzhang23187/McDB.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kzhang23187/McDB/issues"
+  },
+  "homepage": "https://github.com/kzhang23187/McDB#readme"
+}
