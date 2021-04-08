@@ -6,10 +6,10 @@ const cors = require("cors");
 
 
 var db = mysql.createConnection({
-    host:'localhost',
+    host:'34.68.116.112',
     user: 'root',
-    password:'mypassword',
-    database:'411demo',
+    password:'12345',
+    database:'mcdb',
 })
 
 // db.connect(function(err) {
@@ -33,7 +33,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 
 app.get("/api/get", (require, response) => {
-    const sqlSelect = "SELECT * FROM movie_reviews";
+    const sqlSelect = "SELECT * FROM nutrients";
     db.query(sqlSelect, (err, result) => {
         response.send(result);
     });
