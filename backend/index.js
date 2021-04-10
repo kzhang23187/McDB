@@ -58,36 +58,37 @@ app.get("/api/get/UDP/:user_id", (require, response) => {
     });
 });
 
-app.post("/api/insert", (require, response) => {
-    const movieName = require.body.movieName;
-    const movieReview = require.body.movieReview;
+app.post("/api/insert/UDP", (require, response) => {
+    const user_id = require.body.user_id;
+    const dietary_id = require.body.dietary_id;
 
-    const sqlInsert = "INSERT INTO `movie_reviews` (`movieName`, `movieReview`) VALUES (?,?)";
-    db.query(sqlInsert, [movieName, movieReview], (err, result) => {
+    const sqlInsert = "INSERT INTO `user_dietary_preference` VALUES (?, ?)";
+    db.query(sqlInsert, [user_id, dietary_id], (err, result) => {
+        console.log(err);
+        console.log(response);
+    })
+})
+
+app.put("api/update/UDP", (require, response) => {
+    const user_id = require.body.user_id;
+    const dietary_id = require.body.dietary_id;
+
+    const sqlUpdate = "UPDATE `user_dietary_preference` SET `dietary_id` = ? WHERE `user_id` = ?";
+    db.query(sqlUpdate, [dietary_id, user_id], (err, result) => {
+        if (err)
         console.log(err);
     })
-});
+})
 
-app.delete("/api/delete/:movieName", (require, response) => {
-    const movieName = require.params.movieName;
+app.delete("api/delete/:user_id", (require, response) => {
+    const user_id = require.params.user_id
 
-    const sqlDelete = "DELETE FROM `movie_reviews` WHERE `movieName`= ?";
-    db.query(sqlDelete, movieName, (err, result) => {
-        if (err) 
+    const sqlDelete = "DELETE FROM `user_dietary_preference` WHERE `user_id` = ?";
+    db.query(sqlDelete, user_id, (err, result) => {
+        if (err)
         console.log(err);
     })
-});
-
-app.put("/api/update/", (require, response) => {
-    const movieName = require.body.movieName;
-    const movieReview = require.body.movieReview;
-
-    const sqlUpdate = "UPDATE `movie_reviews` SET `movieReview` = ? WHERE `movieName`= ?";
-    db.query(sqlUpdate, [movieReview,movieName ], (err, result) => {
-        if (err) 
-        console.log(error);
-    })
-});
+})
 
 app.listen(3002, () => {
     console.log("running on port 3002");
