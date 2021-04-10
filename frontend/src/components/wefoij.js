@@ -6,10 +6,10 @@ const cors = require("cors");
 
 
 var db = mysql.createConnection({
-    host:'34.68.116.112',
+    host:'localhost',
     user: 'root',
-    password:'12345',
-    database:'mcdb',
+    password:'mypassword',
+    database:'411demo',
 })
 
 // db.connect(function(err) {
@@ -32,28 +32,9 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 
-app.get("/api/get/dish/:dishId", (require, response) => {
-    const dishId = require.params.dishId;
-    const sqlSelect = "SELECT * FROM `dishes` WHERE `dish_id`= ?";
-    db.query(sqlSelect, [dishId], (err, result) => {
-        console.log(err);
-        console.log(result);
-        response.send(result);
-    });
-});
-
 app.get("/api/get", (require, response) => {
-    const sqlSelect = "SELECT * FROM nutrients";
+    const sqlSelect = "SELECT * FROM movie_reviews";
     db.query(sqlSelect, (err, result) => {
-        response.send(result);
-    });
-});
-
-app.get("/api/get/UDP/:user_id", (require, response) => {
-    const user_id = require.params.user_id;
-
-    const sqlSelect = "SELECT * FROM `user_dietary_preference` WHERE `user_id` = ?";
-    db.query(sqlSelect, [user_id], (err, result) => {
         response.send(result);
     });
 });
@@ -64,7 +45,7 @@ app.post("/api/insert", (require, response) => {
 
     const sqlInsert = "INSERT INTO `movie_reviews` (`movieName`, `movieReview`) VALUES (?,?)";
     db.query(sqlInsert, [movieName, movieReview], (err, result) => {
-        console.log(err);
+        console.log(error);
     })
 });
 
@@ -74,7 +55,7 @@ app.delete("/api/delete/:movieName", (require, response) => {
     const sqlDelete = "DELETE FROM `movie_reviews` WHERE `movieName`= ?";
     db.query(sqlDelete, movieName, (err, result) => {
         if (err) 
-        console.log(err);
+        console.log(error);
     })
 });
 
