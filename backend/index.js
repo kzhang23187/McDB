@@ -32,6 +32,16 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 
+app.get("/api/get/dish/:dishId", (require, response) => {
+    const dishId = require.params.dishId;
+    const sqlSelect = "SELECT * FROM `dishes` WHERE `dish_id`= ?";
+    db.query(sqlSelect, [dishId], (err, result) => {
+        console.log(err);
+        console.log(result);
+        response.send(result);
+    });
+});
+
 app.get("/api/get", (require, response) => {
     const sqlSelect = "SELECT * FROM nutrients";
     db.query(sqlSelect, (err, result) => {
