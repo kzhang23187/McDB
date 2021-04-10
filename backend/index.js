@@ -32,15 +32,28 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 
+//Dish API endpoints
 app.get("/api/get/dish/:dishId", (require, response) => {
     const dishId = require.params.dishId;
     const sqlSelect = "SELECT * FROM `dishes` WHERE `dish_id`= ?";
     db.query(sqlSelect, [dishId], (err, result) => {
-        console.log(err);
-        console.log(result);
         response.send(result);
     });
 });
+
+app.put("api/update/dish", (require, response) => {
+    const dish_id = require.body.dish_id;
+    const dish_name = require.body.dish_name;
+    const dish_descrip = require.body.dish_descrip;
+    const dish_recipe = require.body.dish_recipe;
+
+    const sqlUpdate = "UPDATE `dishes` SET `dish_name` = ?, `descrip` = ?, `recipe` = ? WHERE `dish_id` = ?";
+    db.query(sqlUpdate, [dish_name, dish_descrip, dish_recipe, dish_id], (err, result) => {
+        console.log(result);
+        if (err)
+        console.log(err);
+    })
+})
 
 app.get("/api/get", (require, response) => {
     const sqlSelect = "SELECT * FROM nutrients";
@@ -49,6 +62,7 @@ app.get("/api/get", (require, response) => {
     });
 });
 
+//User Dietary Preference API endpoints
 app.get("/api/get/UDP/:user_id", (require, response) => {
     const user_id = require.params.user_id;
 
