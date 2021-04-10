@@ -3,29 +3,32 @@ import React, {useState, useEffect} from "react";
 import Axios from 'axios';
  
 const UserDietaryPreferences = () => {
-    const [nutrientList, setNutrientList] = useState([]);
-    const getNutrients = () => {
-        Axios.get('http://localhost:3002/api/get').then((response) => {
-          setNutrientList(response.data)
+    const [userIdList, setUserList] = useState([]);
+    const [user_id, setUserID] = useState("");
+
+    const getUserPref = (user_id) => {
+        Axios.get(`http://localhost:3002/api/get/UDP/${user_id}`).then((response) => {
+            setUserList(response.data)
         })
     }
     return (
         <div className="App">
             <h1> CRUD APPLICATIONS</h1>
-            <button onClick={getNutrients}> Get </button>
-            {nutrientList.map((val) => {
+            <label> User ID:</label>
+            <input type="text" name="userID" onChange={(e) => {
+                setUserID(e.target.value)
+            } }/>
+           
+            <button onClick={() => {getUserPref(user_id)}}> Get </button>
+            {userIdList.map((val) => {
               return (
                 <div className = "card">
-                  <h1> Nutrient: {val.nutrient_name} </h1>
-                  <p> About: {val.nutrient_description}</p>
+                  <h1> user_id: {val.user_id} </h1>
+                  <p> dietary_id: {val.dietary_id}</p>
                 </div>
               );
             })}
         </div>
-//       <div>
-//          <h1>Home</h1>
-//           <p>Home page body content</p>
-//       </div>
     );
 }
  
