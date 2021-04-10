@@ -2,7 +2,7 @@ import '../App.css';
 import React, {useState, useEffect} from "react";
 import Axios from 'axios';
  
-const Home = () => {
+const UserDietaryPreferences = () => {
     const [nutrientList, setNutrientList] = useState([]);
     const getNutrients = () => {
         Axios.get('http://localhost:3002/api/get').then((response) => {
@@ -29,4 +29,4 @@ const Home = () => {
     );
 }
  
-export default Home;
+export default UserDietaryPreferences;
