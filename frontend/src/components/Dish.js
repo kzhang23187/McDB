@@ -4,33 +4,113 @@ import Axios from 'axios';
  
 const Dish = () => {
     const [state, setState] = useState(false);
+    const [deleteState, setDeleteState] = useState(false);
+    const [advanceSearchState, setAdvancedSearchState] = useState(false);
     const [dishList, setDishList] = useState([]);
     const [dishId, setDishId] = useState("");
     const [dishName, setDishName] = useState("");
     const [dishDescription, setDishDescription] = useState("");
     const [dishRecipe, setDishRecipe] = useState("");
+    const [dishIngredientList, setDishIngredientList] = useState([]);
+    const [dishNutrientList, setDishNutrientList] = useState([]);
+    const [dishCategoryList, setDishCategoryList] = useState([]);
+
+    const [savedDish, setSavedDish] = useState({});
+    const [savedDishIngredients, setSavedDishIngredients] = useState([]);
+    const [savedDishNutrients, setSavedDishNutrients] = useState([]);
+    const [savedDishCategories, setSavedDishCategories] = useState([]);
+
+    const [ingredientSearchList, setIngredientSearchList] = useState([]);
     const getDish = (dishId) => {
         Axios.get(`http://localhost:3002/api/get/dish/${dishId}`).then((response) => {
           setDishList(response.data)
         })
+        Axios.get(`http://localhost:3002/api/get/dishIngredients/${dishId}`).then((response) => {
+          setDishIngredientList(response.data)
+        })
+        Axios.get(`http://localhost:3002/api/get/dishNutrients/${dishId}`).then((response) => {
+          setDishNutrientList(response.data)
+        })
+        Axios.get(`http://localhost:3002/api/get/dishCategory/${dishId}`).then((response) => {
+          setDishCategoryList(response.data)
+        })
     }
     const deleteDish = (dishId) => {
         Axios.delete(`http://localhost:3002/api/delete/dish/${dishId}`).then((response) => {
-          setDishList([])
         })
     }
     const updateDish = (dishId, dishName, dishDescription, dishRecipe) => {
         Axios.put(`http://localhost:3002/api/update/dish`, {
             dish_id: dishId,
             dish_name: dishName,
-            dish_descrip: dishDescription,
-            dish_recipe: dishRecipe
+            descrip: dishDescription,
+            recipe: dishRecipe
         })
     }
+    const insertDish = (dish, nutrients, ingredients, categories) => {
+        Axios.post(`http://localhost:3002/api/insert/dish`, {
+            dish_id: dish.dish_id,
+            dish_name: dish.dish_name,
+            descrip: dish.descrip,
+            recipe: dish.recipe,
+        })
+        nutrients.map((val) => {
+            Axios.post(`http://localhost:3002/api/insert/dishNutrients`, {
+                dish_id: val.dish_id,
+                nutrient_id: val.nutrient_id,
+                amount: val.amount
+            })
+        })
+        ingredients.map((val) => {
+            Axios.post(`http://localhost:3002/api/insert/dishIngredients`, {
+                dish_id: val.dish_id,
+                ingredient_id: val.ingredient_id,
+                amount: val.amount,
+                unit: val.unit
+            })
+        })
+        categories.map((val) => {
+            Axios.post(`http://localhost:3002/api/insert/dishCategories`, {
+                dish_id: val.dish_id,
+                dietary_id: val.dietary_id,
+            })
+        })
+    }
+    const showUndo = () => {
+        return  (<button onClick={() => {
+            insertDish(savedDish, savedDishNutrients, savedDishIngredients, savedDishCategories);
+            setDeleteState(false);
+            setDishList([savedDish]);
+            setDishNutrientList(savedDishNutrients);
+            setDishIngredientList(savedDishIngredients);
+            setDishCategoryList(savedDishCategories)}}>Undo Delete</button>);
+    }
+    const showAdvancedSearch = (val) => {
+      return (
+        <div> 
+            <p>ADVANCED SEARCH OPTIONS</p>
+            <p>Search by category</p>
+            <textarea name="ingredient" rows="1" cols="50" onChange={(e) => {
+                        setIngredientSearchList(e.target.value.split(" "));
+                    } }></textarea>
+            <br/>
+            <button onClick={() => {setAdvancedSearchState(false);}}>Search</button>
+            <p>Search by ingredients</p>
+            <textarea name="ingredient" rows="1" cols="50" onChange={(e) => {
+                        setIngredientSearchList(e.target.value.split(" "));
+                    } }></textarea>
+            <br/>
+            <button onClick={() => {setAdvancedSearchState(false);}}>Search</button>
+            <br/>
+            <br/>
+            <button onClick={() => {setAdvancedSearchState(false);}}>Cancel</button>
+         </div>
+        );
+    }
+
     const showForm = (val) => {
       return (
         <div> 
-
                     <textarea name="dishName" rows="1" cols="50" onChange={(e) => {
                       setDishName(e.target.value)
                     } }>{val.dish_name}</textarea>
@@ -43,37 +123,103 @@ const Dish = () => {
                     } }>{val.recipe}</textarea>
                     <br/>
                     <button onClick={() => {
+                        console.log("button");
+
                         updateDish(val.dish_id, dishName, dishDescription, dishRecipe);
                         setDishList([{dish_id: val.dish_id,
                                         dish_name: dishName, 
                                         descrip: dishDescription,
-                                        recipe: dishRecipe}]); }}>Submit</button>
+                                        recipe: dishRecipe}]);
+                        setState(false);}}>Submit</button>
                   <button onClick={() => {setState(false)}}>Cancel</button>
          </div>
         );
     }
     return (
-        <div className="App">
+        <div>
             <h1> Dish Page</h1>
-            <h2> Get Dish Info </h2>
-            <label> Dish Id:</label>
+            <label> Dish ID:</label>
             <input type="text" name="dishId" onChange={(e) => {
               setDishId(e.target.value)
             } }/>
-            <button onClick={() => {getDish(dishId)}}> Get Dish</button>
+            {advanceSearchState ? null : <button onClick={() => {getDish(dishId); setState(false)}}> Search</button>}
+            <button onClick={() => {setAdvancedSearchState(true)}}> Show Advanced Search</button>
+            {advanceSearchState ? showAdvancedSearch(): null}
+            {deleteState ? showUndo(): null}
             {dishList.map((val) => {
               return (
                 <div>
-                  <h1>{val.dish_name} </h1>
+                  <h2>{val.dish_name} </h2>
                   <p> Description: {val.descrip}</p>
                   <p> Recipe: {val.recipe}</p>
-                  <button onClick={() => {deleteDish(dishId)}}> Delete Dish</button>
-                  <button  onClick={() => {setState(true)} }>Update Dish</button>
+                <h3>Labels</h3>
+                <div>
+                    <ul>
+                    {dishCategoryList.map((val) => {
+                            return (
+                                <li>{val.category}</li>
+                            );
+                    })}
+                    </ul>
+                </div>
+                <h3>Ingredients</h3>
+                <div>
+                    <ul>
+                    {dishIngredientList.map((val) => {
+                        if (val.unit == "unit") {
+                            return (
+                                <li>{val.amount} {val.ingredient_name}</li>
+                            );
+                        } else {
+                            return (
+                                <li>{val.amount} {val.unit} {val.ingredient_name}</li>
+                            );
+                        }
+                    })}
+                    </ul>
+                </div>
+                <h3>Nutrients</h3>
+                <div>
+                    <ul>
+                    {dishNutrientList.map((val) => {
+                        if (val.nutrient_name == "sodium") {
+                            return (
+                                <li>{val.amount}mg {val.nutrient_name}</li>
+                            );
+                        } else if (val.nutrient_name == "calories") {
+                            return (
+                                <li>{val.amount} {val.nutrient_name}</li>
+                            );
+
+                        } else {
+                            return (
+                                <li>{val.amount}g {val.nutrient_name}</li>
+                            );
+
+                        }
+                    })}
+                    </ul>
+                </div>
+                  <button onClick={() => {
+                    setDeleteState(true);
+                    setDishList([]);
+                    deleteDish(val.dish_id);
+                    setSavedDishNutrients(dishNutrientList);
+                    setSavedDishCategories(dishCategoryList);
+                    setSavedDishIngredients(dishIngredientList);
+                    setSavedDish({dish_id : val.dish_id,
+                                    dish_name : val.dish_name,
+                                    descrip : val.descrip,
+                                    recipe : val.recipe});}}> Delete Dish</button>
+                  <button  onClick={() => {setState(true);
+                            setDishName(val.dish_name);
+                            setDishDescription(val.descrip);
+                            setDishRecipe(val.recipe);
+                    } }>Update Dish</button>
                   {state ? showForm(val) : null}
                 </div>
               );
             })}
-            <h2> Add New Dish </h2>
         </div>
     );
 }
