@@ -181,7 +181,7 @@ app.post("/api/insert/UDP", (require, response) => {
     })
 })
 
-app.put("api/update/UDP", (require, response) => {
+app.put("/api/update/UDP", (require, response) => {
     const user_id = require.body.user_id;
     const dietary_id = require.body.dietary_id;
 
@@ -193,7 +193,7 @@ app.put("api/update/UDP", (require, response) => {
     })
 })
 
-app.delete("api/delete/UDP/:user_id", (require, response) => {
+app.delete("/api/delete/UDP/:user_id", (require, response) => {
     const user_id = require.params.user_id
 
     const sqlDelete = "DELETE FROM `user_dietary_preference` WHERE `user_id` = ?";
