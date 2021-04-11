@@ -82,6 +82,8 @@ app.delete("/api/delete/dish/:dishId", (require, response) => {
     const dishId = require.params.dishId;
     const sqlDelete = "DELETE FROM `dishes` WHERE `dish_id` = ?";
     db.query(sqlDelete, dishId, (err, result) => {
+        console.log("delete");
+        console.log(result);
         if (err)
         console.log(err);
     })
@@ -92,42 +94,55 @@ app.post("/api/insert/dish", (require, response) => {
     const dish_name = require.body.dish_name;
     const descrip = require.body.descrip;
     const recipe = require.body.recipe;
+    console.log(require.body);
 
     const sqlInsert = "INSERT INTO `dishes` VALUES (?, ?, ?, ?)";
     db.query(sqlInsert, [dish_id, dish_name, recipe, descrip], (err, result) => {
+        console.log("insert");
+        console.log(result);
         if (err)
         console.log(err);
     })
 })
 app.post("/api/insert/dishNutrients", (require, response) => {
-    const dish_id = require.body.dish_id;
-    const nutrient_id = require.body.nutrient_id;
-    const amount = require.body.amount;
+    const nutrients = require.body.nutrients;
+    const nutrientList = nutrients.map((val) => [val.dish_id, val.nutrient_id, val.amount]);
+    console.log(nutrientList);
 
-    const sqlInsert = "INSERT INTO `dish_contains` VALUES (?, ?, ?)";
-    db.query(sqlInsert, [dish_id, nutrient_id, amount], (err, result) => {
+    const sqlInsert = "INSERT INTO `dish_contains` VALUES ?";
+    db.query(sqlInsert, [nutrientList], (err, result) => {
+        console.log("nutrients");
+        console.log(result);
         if (err)
         console.log(err);
     })
 })
 app.post("/api/insert/dishIngredients", (require, response) => {
-    const dish_id = require.body.dish_id;
-    const ingredient_id = require.body.ingredient_id;
-    const amount = require.body.amount;
-    const unit = require.body.unit;
+    //const dish_id = require.body.dish_id;
+    //const ingredient_id = require.body.ingredient_id;
+    //const amount = require.body.amount;
+    //const unit = require.body.unit;
+    const ingredients = require.body.ingredients;
+    const ingredientList = ingredients.map((val) => [val.dish_id, val.ingredient_id, val.amount, val.unit])
+    console.log(ingredientList);
 
-    const sqlInsert = "INSERT INTO `requires` VALUES (?, ?, ?, ?)";
-    db.query(sqlInsert, [dish_id, ingredient_id, amount, unit], (err, result) => {
+    const sqlInsert = "INSERT INTO `requires` VALUES ?";
+    db.query(sqlInsert, [ingredientList], (err, result) => {
+        console.log("ingredients");
+        console.log(result);
         if (err)
         console.log(err);
     })
 })
 app.post("/api/insert/dishCategories", (require, response) => {
-    const dish_id = require.body.dish_id;
-    const dietary_id = require.body.dietary_id;
+    const categories = require.body.categories;
+    const categoriesList = categories.map((val) => [val.dish_id, val.dietary_id])
+    console.log(categoriesList);
 
-    const sqlInsert = "INSERT INTO `dish_dietary_category` VALUES (?, ?)";
-    db.query(sqlInsert, [dish_id, dietary_id], (err, result) => {
+    const sqlInsert = "INSERT INTO `dish_dietary_category` VALUES ?";
+    db.query(sqlInsert, [categoriesList], (err, result) => {
+        console.log("category");
+        console.log(result);
         if (err)
         console.log(err);
     })

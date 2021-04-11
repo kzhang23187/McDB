@@ -53,28 +53,17 @@ const Dish = () => {
             dish_name: dish.dish_name,
             descrip: dish.descrip,
             recipe: dish.recipe,
-        })
-        nutrients.map((val) => {
+        }).then(
             Axios.post(`http://localhost:3002/api/insert/dishNutrients`, {
-                dish_id: val.dish_id,
-                nutrient_id: val.nutrient_id,
-                amount: val.amount
-            })
-        })
-        ingredients.map((val) => {
+                nutrients: nutrients
+            }),
             Axios.post(`http://localhost:3002/api/insert/dishIngredients`, {
-                dish_id: val.dish_id,
-                ingredient_id: val.ingredient_id,
-                amount: val.amount,
-                unit: val.unit
-            })
-        })
-        categories.map((val) => {
+                ingredients: ingredients
+            }),
             Axios.post(`http://localhost:3002/api/insert/dishCategories`, {
-                dish_id: val.dish_id,
-                dietary_id: val.dietary_id,
+                categories: categories
             })
-        })
+        )
     }
     const showUndo = () => {
         return  (<button onClick={() => {
@@ -166,7 +155,7 @@ const Dish = () => {
                 <div>
                     <ul>
                     {dishIngredientList.map((val) => {
-                        if (val.unit == "unit") {
+                        if (val.unit === "unit") {
                             return (
                                 <li>{val.amount} {val.ingredient_name}</li>
                             );
@@ -182,11 +171,11 @@ const Dish = () => {
                 <div>
                     <ul>
                     {dishNutrientList.map((val) => {
-                        if (val.nutrient_name == "sodium") {
+                        if (val.nutrient_name === "sodium") {
                             return (
                                 <li>{val.amount}mg {val.nutrient_name}</li>
                             );
-                        } else if (val.nutrient_name == "calories") {
+                        } else if (val.nutrient_name === "calories") {
                             return (
                                 <li>{val.amount} {val.nutrient_name}</li>
                             );
