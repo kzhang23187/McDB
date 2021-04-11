@@ -164,6 +164,7 @@ app.get("/api/get/UDP/:user_id", (require, response) => {
 
     const sqlSelect = "SELECT * FROM `user_dietary_preference` WHERE `user_id` = ?";
     db.query(sqlSelect, [user_id], (err, result) => {
+        console.log("get");
         response.send(result);
     });
 });
@@ -174,8 +175,9 @@ app.post("/api/insert/UDP", (require, response) => {
 
     const sqlInsert = "INSERT INTO `user_dietary_preference` VALUES (?, ?)";
     db.query(sqlInsert, [user_id, dietary_id], (err, result) => {
+        console.log("insert");
+        if (err)
         console.log(err);
-        console.log(response);
     })
 })
 
@@ -185,16 +187,18 @@ app.put("api/update/UDP", (require, response) => {
 
     const sqlUpdate = "UPDATE `user_dietary_preference` SET `dietary_id` = ? WHERE `user_id` = ?";
     db.query(sqlUpdate, [dietary_id, user_id], (err, result) => {
+        console.log("update");
         if (err)
         console.log(err);
     })
 })
 
-app.delete("api/delete/:user_id", (require, response) => {
+app.delete("api/delete/UDP/:user_id", (require, response) => {
     const user_id = require.params.user_id
 
     const sqlDelete = "DELETE FROM `user_dietary_preference` WHERE `user_id` = ?";
     db.query(sqlDelete, user_id, (err, result) => {
+        console.log("delete");
         if (err)
         console.log(err);
     })
