@@ -64,6 +64,17 @@ app.get("/api/get/dishCategory/:dishId", (require, response) => {
         response.send(result);
     });
 });
+app.get("/api/get/dishHasIngredients/:ingredients", (require, response) => {
+    const ingredients = require.params.ingredients;
+    var arr = ingredients.split(" ");
+    var ingredientA = "%" + arr[0] + "%";
+    var ingredientB = "%" + arr[1] + "%";
+    const sqlSelect = "SELECT dish_name, descrip, recipe FROM dishes d LEFT JOIN requires r on d.dish_id=r.dish_id LEFT JOIN ingredients i on r.ingredient_id = i.ingredient_id WHERE ingredient_name LIKE ? UNION SELECT dish_name, descrip, recipe FROM dishes d LEFT JOIN requires r on d.dish_id=r.dish_id LEFT JOIN ingredients i on r.ingredient_id = i.ingredient_id WHERE ingredient_name = ?";
+    db.query(sqlSelect, [ingredientA, ingredientB], (err, result) => {
+        if (err) {console.log(err);}
+        response.send(result);
+    });
+});
 
 app.put("/api/update/dish", (require, response) => {
     const dish_id = require.body.dish_id;

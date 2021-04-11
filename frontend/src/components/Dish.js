@@ -20,7 +20,8 @@ const Dish = () => {
     const [savedDishNutrients, setSavedDishNutrients] = useState([]);
     const [savedDishCategories, setSavedDishCategories] = useState([]);
 
-    const [ingredientSearchList, setIngredientSearchList] = useState([]);
+    const [ingredientSearchList, setIngredientSearchList] = useState("");
+    const [categorySearchList, setCategorySearchList] = useState([]);
     const getDish = (dishId) => {
         Axios.get(`http://localhost:3002/api/get/dish/${dishId}`).then((response) => {
           setDishList(response.data)
@@ -33,6 +34,11 @@ const Dish = () => {
         })
         Axios.get(`http://localhost:3002/api/get/dishCategory/${dishId}`).then((response) => {
           setDishCategoryList(response.data)
+        })
+    }
+    const getDishByIngredients = (ingredients) => {
+        Axios.get(`http://localhost:3002/api/get/dishHasIngredients/${ingredients}`).then((response) => {
+            setDishList(response.data)
         })
     }
     const deleteDish = (dishId) => {
@@ -79,17 +85,17 @@ const Dish = () => {
         <div> 
             <p>ADVANCED SEARCH OPTIONS</p>
             <p>Search by category</p>
-            <textarea name="ingredient" rows="1" cols="50" onChange={(e) => {
-                        setIngredientSearchList(e.target.value.split(" "));
+            <textarea name="category" rows="1" cols="50" onChange={(e) => {
+                        setCategorySearchList(e.target.value.split(" "));
                     } }></textarea>
             <br/>
             <button onClick={() => {setAdvancedSearchState(false);}}>Search</button>
             <p>Search by ingredients</p>
             <textarea name="ingredient" rows="1" cols="50" onChange={(e) => {
-                        setIngredientSearchList(e.target.value.split(" "));
+                        setIngredientSearchList(e.target.value);
                     } }></textarea>
             <br/>
-            <button onClick={() => {setAdvancedSearchState(false);}}>Search</button>
+            <button onClick={() => {setDishNutrientList([]); setDishIngredientList([]); setDishCategoryList([]); getDishByIngredients(ingredientSearchList); setAdvancedSearchState(false);}}>Search</button>
             <br/>
             <br/>
             <button onClick={() => {setAdvancedSearchState(false);}}>Cancel</button>
@@ -112,8 +118,6 @@ const Dish = () => {
                     } }>{val.recipe}</textarea>
                     <br/>
                     <button onClick={() => {
-                        console.log("button");
-
                         updateDish(val.dish_id, dishName, dishDescription, dishRecipe);
                         setDishList([{dish_id: val.dish_id,
                                         dish_name: dishName, 
@@ -124,35 +128,10 @@ const Dish = () => {
          </div>
         );
     }
-    return (
-        <div>
-            <h1> Dish Page</h1>
-            <label> Dish ID:</label>
-            <input type="text" name="dishId" onChange={(e) => {
-              setDishId(e.target.value)
-            } }/>
-            {advanceSearchState ? null : <button onClick={() => {getDish(dishId); setState(false)}}> Search</button>}
-            <button onClick={() => {setAdvancedSearchState(true)}}> Show Advanced Search</button>
-            {advanceSearchState ? showAdvancedSearch(): null}
-            {deleteState ? showUndo(): null}
-            {dishList.map((val) => {
-              return (
+    const showIngredients  = () => {
+        return(
                 <div>
-                  <h2>{val.dish_name} </h2>
-                  <p> Description: {val.descrip}</p>
-                  <p> Recipe: {val.recipe}</p>
-                <h3>Labels</h3>
-                <div>
-                    <ul>
-                    {dishCategoryList.map((val) => {
-                            return (
-                                <li>{val.category}</li>
-                            );
-                    })}
-                    </ul>
-                </div>
                 <h3>Ingredients</h3>
-                <div>
                     <ul>
                     {dishIngredientList.map((val) => {
                         if (val.unit === "unit") {
@@ -167,8 +146,26 @@ const Dish = () => {
                     })}
                     </ul>
                 </div>
-                <h3>Nutrients</h3>
+        );
+    }
+    const showLabels  = () => {
+        return(
                 <div>
+                <h3>Labels</h3>
+                    <ul>
+                    {dishCategoryList.map((val) => {
+                            return (
+                                <li>{val.category}</li>
+                            );
+                    })}
+                    </ul>
+                </div>
+        );
+    }
+    const showNutrients = () => {
+        return(
+            <div>
+                <h3>Nutrients</h3>
                     <ul>
                     {dishNutrientList.map((val) => {
                         if (val.nutrient_name === "sodium") {
@@ -189,9 +186,13 @@ const Dish = () => {
                     })}
                     </ul>
                 </div>
+        );
+    }
+    const showUpdateDelete = (val) => {
+        return (
+            <div>
                   <button onClick={() => {
                     setDeleteState(true);
-                    setDishList([]);
                     deleteDish(val.dish_id);
                     setSavedDishNutrients(dishNutrientList);
                     setSavedDishCategories(dishCategoryList);
@@ -205,6 +206,30 @@ const Dish = () => {
                             setDishDescription(val.descrip);
                             setDishRecipe(val.recipe);
                     } }>Update Dish</button>
+            </div>
+        );
+    }
+    return (
+        <div>
+            <h1> Dish Page</h1>
+            <label> Dish ID:</label>
+            <input type="text" name="dishId" onChange={(e) => {
+              setDishId(e.target.value)
+            } }/>
+            {advanceSearchState ? null : <button onClick={() => {getDish(dishId); setState(false)}}> Search</button>}
+            <button onClick={() => {setAdvancedSearchState(true)}}> Show Advanced Search</button>
+            {advanceSearchState ? showAdvancedSearch(): null}
+            {deleteState ? showUndo(): null}
+            {dishList.map((val) => {
+              return (
+                <div>
+                    <h2>{val.dish_name} </h2>
+                    <p> Description: {val.descrip}</p>
+                    <p> Recipe: {val.recipe}</p>
+                    {dishCategoryList.length == 0 ? null : showLabels()}    
+                    {dishIngredientList.length == 0 ? null : showIngredients()}
+                    {dishNutrientList.length == 0 ? null : showNutrients()}
+                    {dishIngredientList.length == 0 ? null : showUpdateDelete(val)}                
                   {state ? showForm(val) : null}
                 </div>
               );
