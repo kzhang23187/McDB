@@ -1,7 +1,7 @@
 import '../App.css';
 import React, {useState, useEffect} from "react";
 import Axios from 'axios';
- 
+
 const Home = () => {
     const [nutrientList, setNutrientList] = useState([]);
     const getNutrients = () => {
@@ -28,5 +28,5 @@ const Home = () => {
 //       </div>
     );
 }
- 
+
 export default Home;

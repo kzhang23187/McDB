@@ -54,7 +54,7 @@ app.delete("/api/delete/:movieName", (require, response) => {
 
     const sqlDelete = "DELETE FROM `movie_reviews` WHERE `movieName`= ?";
     db.query(sqlDelete, movieName, (err, result) => {
-        if (err) 
+        if (err)
         console.log(err);
     })
 });
@@ -65,12 +65,20 @@ app.put("/api/update/", (require, response) => {
 
     const sqlUpdate = "UPDATE `movie_reviews` SET `movieReview` = ? WHERE `movieName`= ?";
     db.query(sqlUpdate, [movieReview,movieName ], (err, result) => {
-        if (err) 
+        if (err)
         console.log(error);
     })
 });
 
+//selected meals stuff
+app.get("/api/get/selectedmeals", (require, response) => {
+    const sqlSelect = "SELECT * FROM selected_dishes";
+    db.query(sqlSelect, (err, result) => {
+        response.send(result);
+    });
+});
+//selected meals stuff end
+
 app.listen(3002, () => {
     console.log("running on port 3002");
 })
-
