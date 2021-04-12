@@ -217,7 +217,7 @@ app.delete("/api/delete/UDP/:user_id", (require, response) => {
 
 //Selected Meals endpoints
 
-app.get("/api/get/selectedmeals/:user_id", (require, response) => {
+app.get("/api/get/selectedmeals/userid/:user_id", (require, response) => {
     const user_id = require.params.user_id;
     console.log(user_id);
     const sqlSelect = "SELECT * FROM `selected_dishes` WHERE `user_id` = ?";
@@ -227,15 +227,15 @@ app.get("/api/get/selectedmeals/:user_id", (require, response) => {
     });
 });
 
-// app.get("/api/get/selectedmeals/:meal_date", (require, response) => {
-//     const meal_date = require.params.meal_date;
-//
-//     const sqlSelect = "SELECT * FROM `selected_dishes` WHERE `meal_date` = ?";
-//     db.query(sqlSelect, [meal_date], (err, result) => {
-//         console.log("get based on mealdate");
-//         response.send(result);
-//     });
-// });
+app.get("/api/get/selectedmeals/date/:meal_date", (require, response) => {
+    const meal_date = require.params.meal_date;
+
+    const sqlSelect = "SELECT * FROM `selected_dishes` WHERE `meal_date` = ?";
+    db.query(sqlSelect, [meal_date], (err, result) => {
+        console.log("get based on mealdate");
+        response.send(result);
+    });
+});
 
 //Selected Meals endpoints end
 
