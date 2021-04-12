@@ -2,7 +2,7 @@ import './App.css';
 import React, {Component} from "react";
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
  
-import Home from './components/Home.js';
+import UserDietaryPreferences from './components/UserDietaryPreferences.js';
 import Dish from './components/Dish.js';
 import UserProfile from './components/UserProfile.js';
 import Meals from './components/Meals.js';
@@ -16,7 +16,7 @@ class App extends Component {
         <div>
           <Navigation />
             <Switch>
-             <Route path="/" component={Home} exact/>
+             <Route path="/" component={UserDietaryPreferences} exact/>
              <Route path="/dish" component={Dish}/>
              <Route path="/user" component={UserProfile}/>
              <Route path="/meal" component={Meals}/>
