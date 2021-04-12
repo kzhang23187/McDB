@@ -19,13 +19,17 @@ const Meals = () => {
           setSelectedDishes(response.data)
         })
     }
-    const insertSelectedDish = () => {
+    const insertSelectedDish = (user_id, dish_id, meal_date, meal_type) => {
       Axios.post(`http://localhost:3002/api/insert/selectedmeals`,{
         user_id: user_id,
         dish_id: dish_id,
         meal_date: meal_date,
         meal_type: meal_type
       })
+    }
+    const deleteSelectedDish = (user_id, dish_id, meal_date, meal_type) => {
+      var data = user_id+ " " + dish_id + " " + meal_date + " " + meal_type;
+      Axios.delete(`http://localhost:3002/api/delete/selectedmeals/${data}`)
     }
 
     return (
@@ -56,9 +60,9 @@ const Meals = () => {
             })}
 
 
-            <h1> Insert a dish into Selected Meals:</h1>
+            <h1> Insert/delete a dish into Selected Meals:</h1>
             <div className="form">
-                <label> User id for user that this dish should be attributed to:</label>
+                <label> User id for user that this dish is attributed to:</label>
                 <input type="text" name="user_id" onChange={(e) => {
                     setUserID(e.target.value)
                  }}/>
@@ -76,6 +80,7 @@ const Meals = () => {
                   }}/>
             </div>
             <button onClick={()=>{insertSelectedDish(user_id, dish_id, meal_date, meal_type)}}> Insert dish </button>
+            <button onClick={()=>{deleteSelectedDish(user_id, dish_id, meal_date, meal_type)}}> Delete dish </button>
             {selectedDishes.map((val) => {
               return (
                 <div className = "card">

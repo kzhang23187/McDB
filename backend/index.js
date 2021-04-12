@@ -278,6 +278,18 @@ app.post("/api/insert/selectedmeals", (require, response) => {
     })
 })
 
+app.delete("/api/delete/selectedmeals/:data", (require, response) => {
+    console.log(require.params.data)
+    const data = require.params.data
+    const arr = data.split(" ")
+    const sqlDelete = "DELETE FROM `selected_dishes` WHERE (`user_id` = ? AND `dish_id` = ? AND `meal_date` = ? AND `meal_type` = ?)";
+    db.query(sqlDelete, [arr[0], arr[1], arr[2], arr[3]], (err, result) => {
+        console.log("delete");
+        if (err)
+        console.log(err);
+    })
+})
+
 //Selected Meals endpoints end
 
 app.listen(3002, () => {
