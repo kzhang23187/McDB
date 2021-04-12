@@ -67,10 +67,37 @@ app.get("/api/get/dishCategory/:dishId", (require, response) => {
 app.get("/api/get/dishHasIngredients/:ingredients", (require, response) => {
     const ingredients = require.params.ingredients;
     var arr = ingredients.split(" ");
-    var ingredientA = "%" + arr[0] + "%";
-    var ingredientB = "%" + arr[1] + "%";
-    const sqlSelect = "SELECT dish_name, descrip, recipe FROM dishes d LEFT JOIN requires r on d.dish_id=r.dish_id LEFT JOIN ingredients i on r.ingredient_id = i.ingredient_id WHERE ingredient_name LIKE ? UNION SELECT dish_name, descrip, recipe FROM dishes d LEFT JOIN requires r on d.dish_id=r.dish_id LEFT JOIN ingredients i on r.ingredient_id = i.ingredient_id WHERE ingredient_name = ?";
-    db.query(sqlSelect, [ingredientA, ingredientB], (err, result) => {
+    var ingredientNames = [];
+    var sqlSelect = ""
+    for (var i = 0; i < arr.length; i++) {
+        if (i == 0) {
+            sqlSelect = sqlSelect + "SELECT dish_name, descrip, recipe FROM dishes d LEFT JOIN requires r on d.dish_id=r.dish_id LEFT JOIN ingredients i on r.ingredient_id=i.ingredient_id WHERE ingredient_name LIKE ? ";
+        } else {
+            sqlSelect = sqlSelect + "UNION SELECT dish_name, descrip, recipe FROM dishes d LEFT JOIN requires r on d.dish_id=r.dish_id LEFT JOIN ingredients i on r.ingredient_id=i.ingredient_id WHERE ingredient_name LIKE ? ";
+        }
+        ingredientNames.push("%" + arr[i] + "%");
+    }
+    db.query(sqlSelect, ingredientNames, (err, result) => {
+        if (err) {console.log(err);}
+        response.send(result);
+    });
+});
+app.get("/api/get/dishIsCategory/:categories", (require, response) => {
+    const categories = require.params.categories;
+    console.log(categories);
+    var arr = categories.split(" ");
+    var categoryNames = [];
+    var sqlSelect = ""
+    for (var i = 0; i < arr.length; i++) {
+        if (i == 0) {
+            sqlSelect = sqlSelect + "SELECT dish_name, descrip, recipe FROM dishes d LEFT JOIN dish_dietary_category ddc on d.dish_id=ddc.dish_id LEFT JOIN dietary_category dc on dc.dietary_id=ddc.dietary_id WHERE category LIKE ? ";
+        } else {
+            sqlSelect = sqlSelect + "UNION SELECT dish_name, descrip, recipe FROM dishes d LEFT JOIN dish_dietary_category ddc on d.dish_id=ddc.dish_id LEFT JOIN dietary_category dc on dc.dietary_id=ddc.dietary_id WHERE category LIKE ? ";
+        }
+        categoryNames.push("%" + arr[i] + "%");
+    }
+    db.query(sqlSelect, categoryNames, (err, result) => {
+        console.log(result);
         if (err) {console.log(err);}
         response.send(result);
     });
