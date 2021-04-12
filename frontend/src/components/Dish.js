@@ -36,6 +36,11 @@ const Dish = () => {
           setDishCategoryList(response.data)
         })
     }
+    const getDishByCategories = (categories) => {
+        Axios.get(`http://localhost:3002/api/get/dishIsCategory/${categories}`).then((response) => {
+            setDishList(response.data)
+        })
+    }
     const getDishByIngredients = (ingredients) => {
         Axios.get(`http://localhost:3002/api/get/dishHasIngredients/${ingredients}`).then((response) => {
             setDishList(response.data)
@@ -86,10 +91,10 @@ const Dish = () => {
             <p>ADVANCED SEARCH OPTIONS</p>
             <p>Search by category</p>
             <textarea name="category" rows="1" cols="50" onChange={(e) => {
-                        setCategorySearchList(e.target.value.split(" "));
+                        setCategorySearchList(e.target.value);
                     } }></textarea>
             <br/>
-            <button onClick={() => {setAdvancedSearchState(false);}}>Search</button>
+            <button onClick={() => {setDishNutrientList([]); setDishIngredientList([]); setDishCategoryList([]); getDishByCategories(categorySearchList); setAdvancedSearchState(false);}}>Search</button>
             <p>Search by ingredients</p>
             <textarea name="ingredient" rows="1" cols="50" onChange={(e) => {
                         setIngredientSearchList(e.target.value);
@@ -193,6 +198,7 @@ const Dish = () => {
             <div>
                   <button onClick={() => {
                     setDeleteState(true);
+                    setDishList([]);
                     deleteDish(val.dish_id);
                     setSavedDishNutrients(dishNutrientList);
                     setSavedDishCategories(dishCategoryList);
