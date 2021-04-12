@@ -237,6 +237,20 @@ app.get("/api/get/selectedmeals/date/:meal_date", (require, response) => {
     });
 });
 
+app.post("/api/insert/selectedmeals", (require, response) => {
+    const user_id = require.body.user_id;
+    const dish_id = require.body.dish_id;
+    const meal_date = require.body.meal_date;
+    const meal_type = require.body.meal_type;
+
+    const sqlInsert = "INSERT INTO `selected_dishes` VALUES (?, ?, ?, ?)";
+    db.query(sqlInsert, [user_id, dish_id, meal_date, meal_type], (err, result) => {
+        console.log("insert");
+        if (err)
+        console.log(err);
+    })
+})
+
 //Selected Meals endpoints end
 
 app.listen(3002, () => {
