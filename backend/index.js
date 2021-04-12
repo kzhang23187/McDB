@@ -215,14 +215,29 @@ app.delete("/api/delete/UDP/:user_id", (require, response) => {
     })
 })
 
-//selected meals stuff
-app.get("/api/get/selectedmeals", (require, response) => {
-    const sqlSelect = "SELECT * FROM selected_dishes";
-    db.query(sqlSelect, (err, result) => {
+//Selected Meals endpoints
+
+app.get("/api/get/selectedmeals/:user_id", (require, response) => {
+    const user_id = require.params.user_id;
+    console.log(user_id);
+    const sqlSelect = "SELECT * FROM `selected_dishes` WHERE `user_id` = ?";
+    db.query(sqlSelect, [user_id], (err, result) => {
+        console.log("get based on userid");
         response.send(result);
     });
 });
-//selected meals stuff end
+
+// app.get("/api/get/selectedmeals/:meal_date", (require, response) => {
+//     const meal_date = require.params.meal_date;
+//
+//     const sqlSelect = "SELECT * FROM `selected_dishes` WHERE `meal_date` = ?";
+//     db.query(sqlSelect, [meal_date], (err, result) => {
+//         console.log("get based on mealdate");
+//         response.send(result);
+//     });
+// });
+
+//Selected Meals endpoints end
 
 app.listen(3002, () => {
     console.log("running on port 3002");

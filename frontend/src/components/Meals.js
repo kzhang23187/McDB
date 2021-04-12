@@ -4,15 +4,32 @@ import Axios from 'axios';
 
 const Meals = () => {
     const [selectedDishes, setSelectedDishes] = useState([]);
-    const getSelectedDishes = () => {
-        Axios.get('http://localhost:3002/api/get/selectedmeals').then((response) => {
+    const [user_id, setUserID] = useState("");
+    // const [meal_date, setMealDate] = useState("");
+
+    const filterByUserId = (user_id) => {
+      Axios.get(`http://localhost:3002/api/get/selectedmeals/${user_id}`).then((response) => {
           setSelectedDishes(response.data)
         })
     }
+
+    // const filterByMealDate = (meal_date) => {
+    //   Axios.get(`http://localhost:3002/api/get/selectedmeals/${meal_date}`).then((response) => {
+    //       setSelectedDishes(response.data)
+    //     })
+    // }
+
     return (
         <div className="App">
-            <h1> CRUD APPLICATIONS claire</h1>
-            <button onClick={getSelectedDishes}> View Meal History </button>
+            <h1> Selected Meals</h1>
+
+            <div className="form">
+                <label> To filter by user id, please enter the id below:</label>
+                <input type="text" name="user_id" onChange={(e) => {
+                    setUserID(e.target.value)
+                 }}/>
+            </div>
+            <button onClick={()=>{filterByUserId(user_id)}}> View Meal History by User </button>
             {selectedDishes.map((val) => {
               return (
                 <div className = "card">
@@ -24,10 +41,6 @@ const Meals = () => {
               );
             })}
         </div>
-//       <div>
-//          <h1>Meals</h1>
-//           <p>Meals page body content</p>
-//       </div>
     );
 }
 
