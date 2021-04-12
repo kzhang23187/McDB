@@ -6,6 +6,7 @@ const Dish = () => {
     const [state, setState] = useState(false);
     const [deleteState, setDeleteState] = useState(false);
     const [advanceSearchState, setAdvancedSearchState] = useState(false);
+    const [addDishState, setAddDishState] = useState(false);
     const [dishList, setDishList] = useState([]);
     const [dishId, setDishId] = useState("");
     const [dishName, setDishName] = useState("");
@@ -15,6 +16,14 @@ const Dish = () => {
     const [dishNutrientList, setDishNutrientList] = useState([]);
     const [dishCategoryList, setDishCategoryList] = useState([]);
 
+    const [newDishId, setNewDishId] = useState("");
+    const [newDishName, setNewDishName] = useState("");
+    const [newDishDescription, setNewDishDescription] = useState("");
+    const [newDishRecipe, setNewDishRecipe] = useState("");
+    const [newDishIngredientList, setNewDishIngredientList] = useState([]);
+    const [newDishNutrientList, setNewDishNutrientList] = useState([]);
+    const [newDishCategoryList, setNewDishCategoryList] = useState([]);
+
     const [savedDish, setSavedDish] = useState({});
     const [savedDishIngredients, setSavedDishIngredients] = useState([]);
     const [savedDishNutrients, setSavedDishNutrients] = useState([]);
@@ -22,6 +31,14 @@ const Dish = () => {
 
     const [ingredientSearchList, setIngredientSearchList] = useState("");
     const [categorySearchList, setCategorySearchList] = useState([]);
+    const [calorieMin, setCalorieMin] = useState(0);
+    const [calorieMax, setCalorieMax] = useState(0);
+    const [fatMin, setFatMin] = useState(0);
+    const [fatMax, setFatMax] = useState(0);
+    const [proteinMin, setProteinMin] = useState(0);
+    const [proteinMax, setProteinMax] = useState(0);
+    const [sodiumMin, setSodiumMin] = useState(0);
+    const [sodiumMax, setSodiumMax] = useState(0);
     const getDish = (dishId) => {
         Axios.get(`http://localhost:3002/api/get/dish/${dishId}`).then((response) => {
           setDishList(response.data)
@@ -46,6 +63,11 @@ const Dish = () => {
             setDishList(response.data)
         })
     }
+    const getDishByNutrient = (nutrients) => {
+        Axios.get(`http://localhost:3002/api/get/dishHasNutrients/${nutrients}`).then((response) => {
+            setDishList(response.data)
+        })
+    }
     const deleteDish = (dishId) => {
         Axios.delete(`http://localhost:3002/api/delete/dish/${dishId}`).then((response) => {
         })
@@ -57,6 +79,15 @@ const Dish = () => {
             descrip: dishDescription,
             recipe: dishRecipe
         })
+    }
+    const insertSingleDish = (dish_id, dish_name, descrip, recipe) => {
+        Axios.post(`http://localhost:3002/api/insert/dish`, {
+            dish_id: dish_id,
+            dish_name: dish_name,
+            descrip: descrip,
+            recipe: recipe,
+        })
+
     }
     const insertDish = (dish, nutrients, ingredients, categories) => {
         Axios.post(`http://localhost:3002/api/insert/dish`, {
@@ -85,6 +116,32 @@ const Dish = () => {
             setDishIngredientList(savedDishIngredients);
             setDishCategoryList(savedDishCategories)}}>Undo Delete</button>);
     }
+    const showAddDish = () => {
+        return(
+            <div>
+                <br/>
+                <label> Dish ID:</label>
+                <input type="text" name="newDishId" onChange={(e) => {
+                    setNewDishId(e.target.value)
+                } }/>
+                <label> Dish Name:</label>
+                <textarea name="newDishName" rows="1" cols="50" onChange={(e) => {
+                    setNewDishName(e.target.value);
+                } }></textarea>
+                <br/>
+                <label> Dish Description:</label>
+                <textarea name="Dish Description" rows="10" cols="50" onChange={(e) => {
+                        setNewDishDescription(e.target.value);
+                    } }></textarea>
+                <label> Dish Recipe:</label>
+                <textarea name="Dish Recipe" rows="10" cols="50" onChange={(e) => {
+                        setNewDishRecipe(e.target.value);
+                    } }></textarea>
+                <br/>
+                <button onClick={() => {insertSingleDish(newDishId, newDishName, newDishDescription, newDishRecipe); setAddDishState(false); setDishList([{dish_id: newDishId, dish_name: newDishName, descrip: newDishDescription, recipe: newDishRecipe}]) }}>Add</button>
+            </div>
+        );
+    }
     const showAdvancedSearch = (val) => {
       return (
         <div> 
@@ -94,16 +151,42 @@ const Dish = () => {
                         setCategorySearchList(e.target.value);
                     } }></textarea>
             <br/>
-            <button onClick={() => {setDishNutrientList([]); setDishIngredientList([]); setDishCategoryList([]); getDishByCategories(categorySearchList); setAdvancedSearchState(false);}}>Search</button>
+            <button onClick={() => {setDishNutrientList([]); setDishIngredientList([]); setDishCategoryList([]); getDishByCategories(categorySearchList);}}>Search</button>
             <p>Search by ingredients</p>
             <textarea name="ingredient" rows="1" cols="50" onChange={(e) => {
                         setIngredientSearchList(e.target.value);
                     } }></textarea>
             <br/>
-            <button onClick={() => {setDishNutrientList([]); setDishIngredientList([]); setDishCategoryList([]); getDishByIngredients(ingredientSearchList); setAdvancedSearchState(false);}}>Search</button>
+            <button onClick={() => {setDishNutrientList([]); setDishIngredientList([]); setDishCategoryList([]); getDishByIngredients(ingredientSearchList);}}>Search</button>
             <br/>
+            <p>Search by Nutrient Ranges</p>
+            <label>Calories: </label>
+            <input type="number" onChange={(e)=>{setCalorieMin(e.target.value)}}/>
+            <label> to </label>
+            <input type="number" onChange={(e)=>{setCalorieMax(e.target.value)}}/>
             <br/>
-            <button onClick={() => {setAdvancedSearchState(false);}}>Cancel</button>
+            <label>Protein: </label>
+            <input type="number" onChange={(e)=>{setProteinMin(e.target.value)}}/>
+            <label> to </label>
+            <input type="number" onChange={(e)=>{setProteinMax(e.target.value)}}/>
+            <br/>
+            <label>Fat: </label>
+            <input type="number" onChange={(e)=>{setFatMin(e.target.value)}}/>
+            <label> to </label>
+            <input type="number" onChange={(e)=>{setFatMax(e.target.value)}}/>
+            <br/>
+            <label>Sodium: </label>
+            <input type="number" onChange={(e)=>{setSodiumMin(e.target.value)}}/>
+            <label> to </label>
+            <input type="number" onChange={(e)=>{setSodiumMax(e.target.value)}}/>
+            <br/>
+            <button onClick={() => {
+                setDishNutrientList([]);
+                setDishIngredientList([]);
+                setDishCategoryList([]);
+                getDishByNutrient("" + calorieMin +":" + calorieMax + " " + proteinMin + ":" + proteinMax + " " + fatMin + ":" + fatMax + " " + sodiumMin + ":" + sodiumMax); setAdvancedSearchState(false);}}>Search</button>
+            <br/>
+            <button onClick={() => {setDishList([]); setAdvancedSearchState(false);}}>Cancel</button>
          </div>
         );
     }
@@ -222,20 +305,23 @@ const Dish = () => {
             <input type="text" name="dishId" onChange={(e) => {
               setDishId(e.target.value)
             } }/>
-            {advanceSearchState ? null : <button onClick={() => {getDish(dishId); setState(false)}}> Search</button>}
-            <button onClick={() => {setAdvancedSearchState(true)}}> Show Advanced Search</button>
+            {advanceSearchState ? null : <button onClick={() => {setAddDishState(false); getDish(dishId); setState(false)}}> Search</button>}
+            <button onClick={() => {setDishList([]); setAddDishState(false); setAdvancedSearchState(true)}}> Show Advanced Search</button>
+            {advanceSearchState ? null: <button onClick={() => {setDishList([]); setAddDishState(true)}}>Add Dish</button>}
             {advanceSearchState ? showAdvancedSearch(): null}
+            {addDishState ? showAddDish(): null}
             {deleteState ? showUndo(): null}
             {dishList.map((val) => {
               return (
                 <div>
                     <h2>{val.dish_name} </h2>
+                    <p>Id: {val.dish_id}</p>
                     <p> Description: {val.descrip}</p>
                     <p> Recipe: {val.recipe}</p>
                     {dishCategoryList.length == 0 ? null : showLabels()}    
                     {dishIngredientList.length == 0 ? null : showIngredients()}
                     {dishNutrientList.length == 0 ? null : showNutrients()}
-                    {dishIngredientList.length == 0 ? null : showUpdateDelete(val)}                
+                    {advanceSearchState ? null : showUpdateDelete(val)}
                   {state ? showForm(val) : null}
                 </div>
               );
