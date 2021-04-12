@@ -290,6 +290,19 @@ app.delete("/api/delete/selectedmeals/:data", (require, response) => {
     })
 })
 
+app.put("/api/update/selectedmeals/:datum", (require, response) => {
+    console.log(require.params.datum)
+    const datum = require.params.datum
+    const arr = datum.split(" ")
+    console.log(require.params)
+    const sqlUpdate = "UPDATE `selected_dishes` SET `dish_id` = ? WHERE (`user_id` = ? AND `meal_date` = ? AND `meal_type` = ?)";
+    db.query(sqlUpdate, [arr[1], arr[0], arr[2], arr[3]], (err, result) => {
+        console.log("update");
+        if (err)
+        console.log(err);
+    })
+})
+
 //Selected Meals endpoints end
 
 app.listen(3002, () => {
