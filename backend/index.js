@@ -71,9 +71,9 @@ app.get("/api/get/dishHasIngredients/:ingredients", (require, response) => {
     var sqlSelect = ""
     for (var i = 0; i < arr.length; i++) {
         if (i == 0) {
-            sqlSelect = sqlSelect + "SELECT dish_name, descrip, recipe FROM dishes d LEFT JOIN requires r on d.dish_id=r.dish_id LEFT JOIN ingredients i on r.ingredient_id=i.ingredient_id WHERE ingredient_name LIKE ? ";
+            sqlSelect = sqlSelect + "SELECT d.dish_id, dish_name, descrip, recipe FROM dishes d LEFT JOIN requires r on d.dish_id=r.dish_id LEFT JOIN ingredients i on r.ingredient_id=i.ingredient_id WHERE ingredient_name LIKE ? ";
         } else {
-            sqlSelect = sqlSelect + "UNION SELECT dish_name, descrip, recipe FROM dishes d LEFT JOIN requires r on d.dish_id=r.dish_id LEFT JOIN ingredients i on r.ingredient_id=i.ingredient_id WHERE ingredient_name LIKE ? ";
+            sqlSelect = sqlSelect + "UNION SELECT d.dish_id, dish_name, descrip, recipe FROM dishes d LEFT JOIN requires r on d.dish_id=r.dish_id LEFT JOIN ingredients i on r.ingredient_id=i.ingredient_id WHERE ingredient_name LIKE ? ";
         }
         ingredientNames.push("%" + arr[i] + "%");
     }
@@ -90,9 +90,9 @@ app.get("/api/get/dishIsCategory/:categories", (require, response) => {
     var sqlSelect = ""
     for (var i = 0; i < arr.length; i++) {
         if (i == 0) {
-            sqlSelect = sqlSelect + "SELECT dish_name, descrip, recipe FROM dishes d LEFT JOIN dish_dietary_category ddc on d.dish_id=ddc.dish_id LEFT JOIN dietary_category dc on dc.dietary_id=ddc.dietary_id WHERE category LIKE ? ";
+            sqlSelect = sqlSelect + "SELECT d.dish_id, dish_name, descrip, recipe FROM dishes d LEFT JOIN dish_dietary_category ddc on d.dish_id=ddc.dish_id LEFT JOIN dietary_category dc on dc.dietary_id=ddc.dietary_id WHERE category LIKE ? ";
         } else {
-            sqlSelect = sqlSelect + "UNION SELECT dish_name, descrip, recipe FROM dishes d LEFT JOIN dish_dietary_category ddc on d.dish_id=ddc.dish_id LEFT JOIN dietary_category dc on dc.dietary_id=ddc.dietary_id WHERE category LIKE ? ";
+            sqlSelect = sqlSelect + "UNION SELECT d.dish_id, dish_name, descrip, recipe FROM dishes d LEFT JOIN dish_dietary_category ddc on d.dish_id=ddc.dish_id LEFT JOIN dietary_category dc on dc.dietary_id=ddc.dietary_id WHERE category LIKE ? ";
         }
         categoryNames.push("%" + arr[i] + "%");
     }
@@ -102,6 +102,38 @@ app.get("/api/get/dishIsCategory/:categories", (require, response) => {
         response.send(result);
     });
 });
+app.get("/api/get/dishHasNutrients/:nutrients", (require, response) => {
+    const nutrients = require.params.nutrients;
+    console.log(nutrients);
+    const arr = nutrients.split(" ");
+    var sqlSelect = "";
+    var nutrVal = [];
+    for (var i = 0; i < arr.length; i++) {
+        const elems = arr[i].split(":");
+        if (i == 0) {
+            sqlSelect = "SELECT d.dish_id, d.dish_name, d.descrip, d.recipe FROM dishes d LEFT JOIN dish_contains dc on d.dish_id = dc.dish_id LEFT JOIN nutrients n on dc.nutrient_id = n.nutrient_id WHERE (n.nutrient_id = 1 AND dc.amount >= ? AND dc.amount <= ?) "
+            nutrVal.push(elems[0])
+            nutrVal.push(elems[1])
+        } else if (i == 1){
+            sqlSelect = sqlSelect + " AND d.dish_name IN (SELECT d.dish_name FROM dishes d LEFT JOIN dish_contains dc on d.dish_id = dc.dish_id LEFT JOIN nutrients n on dc.nutrient_id = n.nutrient_id WHERE n.nutrient_id = 2 AND dc.amount >= ? AND dc.amount <= ?)"
+            nutrVal.push(elems[0])
+            nutrVal.push(elems[1])
+        } else if (i == 2){
+            sqlSelect = sqlSelect + " AND d.dish_name IN (SELECT d.dish_name FROM dishes d LEFT JOIN dish_contains dc on d.dish_id = dc.dish_id LEFT JOIN nutrients n on dc.nutrient_id = n.nutrient_id WHERE n.nutrient_id = 0 AND dc.amount >= ? AND dc.amount <= ?)"
+            nutrVal.push(elems[0])
+            nutrVal.push(elems[1])
+        } else if (i == 3){
+            sqlSelect = sqlSelect + " AND d.dish_name IN (SELECT d.dish_name FROM dishes d LEFT JOIN dish_contains dc on d.dish_id = dc.dish_id LEFT JOIN nutrients n on dc.nutrient_id = n.nutrient_id WHERE n.nutrient_id = 3 AND dc.amount >= ? AND dc.amount <= ?)"
+            nutrVal.push(elems[0])
+            nutrVal.push(elems[1])
+        }
+    }
+    db.query(sqlSelect, nutrVal, (err, result) => {
+        console.log(result);
+        if (err) {console.log(err);}
+        response.send(result);
+    });
+})
 
 app.put("/api/update/dish", (require, response) => {
     const dish_id = require.body.dish_id;
