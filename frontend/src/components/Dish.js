@@ -184,7 +184,8 @@ const Dish = () => {
                 setDishNutrientList([]);
                 setDishIngredientList([]);
                 setDishCategoryList([]);
-                getDishByNutrient("" + calorieMin +":" + calorieMax + " " + proteinMin + ":" + proteinMax + " " + fatMin + ":" + fatMax + " " + sodiumMin + ":" + sodiumMax); setAdvancedSearchState(false);}}>Search</button>
+                getDishByNutrient("" + calorieMin +":" + calorieMax + " " + proteinMin + ":" + proteinMax + " " + fatMin + ":" + fatMax + " " + sodiumMin + ":" + sodiumMax);
+                }}>Search</button>
             <br/>
             <button onClick={() => {setDishList([]); setAdvancedSearchState(false);}}>Cancel</button>
          </div>
