@@ -31,6 +31,17 @@ var db = mysql.createConnection({
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
+//Stored procedure
+app.get("/api/get/macroValues/:userName", (require, response) => {
+    const userName = require.params.userName;
+    var user_id;
+    db.query('SELECT user_id FROM `user_login` WHERE `username` = ?', [userName], (err, result) => {
+        user_id = result[0].user_id;
+        db.query('call calcMacro(?)', [user_id], (err, result) => {
+            response.send(result[0]);
+        })
+    })
+});
 
 //Dish API endpoints
 app.get("/api/get/dish/:dishId", (require, response) => {
