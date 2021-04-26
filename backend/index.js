@@ -31,6 +31,15 @@ var db = mysql.createConnection({
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
+
+app.get("/api/get/userGoal/:userName", (require, response) => {
+    const userName = require.params.userName;
+    db.query('SELECT * FROM goal g JOIN user_login ul ON g.user_id = ul.user_id WHERE ul.username = ?', [userName], (err, result) => {
+        console.log(result);
+        response.send(result);
+    })
+});
+
 //Stored procedure
 app.get("/api/get/macroValues/:userName", (require, response) => {
     const userName = require.params.userName;
@@ -164,7 +173,6 @@ app.delete("/api/delete/dish/:dishId", (require, response) => {
     const sqlDelete = "DELETE FROM `dishes` WHERE `dish_id` = ?";
     db.query(sqlDelete, dishId, (err, result) => {
         console.log("delete");
-        console.log(result);
         if (err)
         console.log(err);
     })
