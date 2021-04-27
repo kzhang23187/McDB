@@ -298,7 +298,7 @@ app.delete("/api/delete/UDP/:user_id", (require, response) => {
 app.get("/api/get/selectedmeals/userid/:user_id", (require, response) => {
     const user_id = require.params.user_id;
     console.log(user_id);
-    const sqlSelect = "SELECT * FROM `selected_dishes` WHERE `user_id` = ?";
+    const sqlSelect = "SELECT * FROM `selected_dishes` s JOIN `dishes` d ON s.dish_id = d.dish_id WHERE `user_id` = ?";
     db.query(sqlSelect, [user_id], (err, result) => {
         console.log("get based on userid");
         response.send(result);
@@ -308,7 +308,7 @@ app.get("/api/get/selectedmeals/userid/:user_id", (require, response) => {
 app.get("/api/get/selectedmeals/date/:meal_date", (require, response) => {
     const meal_date = require.params.meal_date;
 
-    const sqlSelect = "SELECT * FROM `selected_dishes` WHERE `meal_date` = ?";
+    const sqlSelect = "SELECT * FROM `selected_dishes` s JOIN `dishes` d ON s.dish_id = d.dish_id WHERE `meal_date` = ?";
     db.query(sqlSelect, [meal_date], (err, result) => {
         console.log("get based on mealdate");
         response.send(result);
@@ -360,7 +360,7 @@ app.put("/api/update/selectedmeals/:datum", (require, response) => {
 app.get("/api/get/home/selectedmeals/:username", (require, response) => {
     const username = require.params.username;
     console.log(username);
-    const sqlSelect = "SELECT * FROM `selected_dishes` s JOIN `user_login` u ON s.user_id = u.user_id WHERE `username` = ?";
+    const sqlSelect = "SELECT * FROM `selected_dishes` s JOIN `user_login` u ON s.user_id = u.user_id JOIN `dishes` d ON s.dish_id = d.dish_id WHERE `username` = ?";
     db.query(sqlSelect, [username], (err, result) => {
         console.log("automatically show selected dishes based on username");
         response.send(result);

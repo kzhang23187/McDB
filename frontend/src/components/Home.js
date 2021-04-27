@@ -106,7 +106,7 @@ const Home = (props) => {
             {username_info.map((val) => {
               return (
                 <div className = "card">
-                  <h1> Dish: {val.dish_id} </h1>
+                  <h1> Dish: {val.dish_name} </h1>
                   <p> User: {val.user_id}</p>
                   <p> Meal: {val.meal_type}</p>
                   <p> Date: {val.meal_date}</p>
