@@ -356,6 +356,18 @@ app.put("/api/update/selectedmeals/:datum", (require, response) => {
 
 //Selected Meals endpoints end
 
+//
+app.get("/api/get/home/selectedmeals/:username", (require, response) => {
+    const username = require.params.username;
+    console.log(username);
+    const sqlSelect = "SELECT * FROM `selected_dishes` s JOIN `user_login` u ON s.user_id = u.user_id WHERE `username` = ?";
+    db.query(sqlSelect, [username], (err, result) => {
+        console.log("automatically show selected dishes based on username");
+        response.send(result);
+    });
+});
+//
+
 app.listen(3002, () => {
     console.log("running on port 3002");
 })

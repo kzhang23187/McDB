@@ -10,6 +10,7 @@ const Home = (props) => {
     if (username == null) {
         username = props.location.state.username;
     }
+    const [username_info, setUserNameInfo] = useState([]);
     const [userAmount, setUserAmount] = useState([{amount:0},{amount:0},{amount:0},{amount:0}]);
     const [userid, setUserId] = useState('');
     const [goals, setGoals] = useState([{amount:0},{amount:0},{amount:0},{amount:0}]);
@@ -21,7 +22,7 @@ const Home = (props) => {
                 title: "Amount (g)",
                 includeZero: true,
             },
-      data: [{				
+      data: [{
                 type: "column",
                 dataPoints: [
                     { label: "Weekly Avg",  y: userAmount[3].amount  },
@@ -37,7 +38,7 @@ const Home = (props) => {
                 title: "Amount (g)",
                 includeZero: true,
             },
-      data: [{				
+      data: [{
                 type: "column",
                 dataPoints: [
                     { label: "Weekly Avg",  y: userAmount[2].amount  },
@@ -53,7 +54,7 @@ const Home = (props) => {
                 title: "Amount (cal)",
                 includeZero: true,
             },
-      data: [{				
+      data: [{
                 type: "column",
                 dataPoints: [
                     { label: "Weekly Avg",  y: userAmount[1].amount  },
@@ -69,7 +70,7 @@ const Home = (props) => {
                 title: "Amount (g)",
                 includeZero: true,
             },
-      data: [{				
+      data: [{
                 type: "column",
                 dataPoints: [
                     { label: "Weekly Avg",  y: userAmount[0].amount  },
@@ -92,10 +93,27 @@ const Home = (props) => {
           setUserAmount(response.data)
         })
     },[])
-    
+    useEffect(() => {
+      Axios.get(`http://localhost:3002/api/get/home/selectedmeals/${username}`).then((response) => {
+          setUserNameInfo(response.data)
+        })
+    }, [])
+
     return (
         <div className="App">
             <h1> Welcome, {username}</h1>
+            <div>
+            {username_info.map((val) => {
+              return (
+                <div className = "card">
+                  <h1> Dish: {val.dish_id} </h1>
+                  <p> User: {val.user_id}</p>
+                  <p> Meal: {val.meal_type}</p>
+                  <p> Date: {val.meal_date}</p>
+                </div>
+              );
+            })}
+            </div>
             <section>
                 <div>
                     <CanvasJSChart options = {fat_chart}
@@ -118,6 +136,9 @@ const Home = (props) => {
                     />
                 </div>
             </section>
+
+
+
         </div>
 //       <div>
 //          <h1>Home</h1>
