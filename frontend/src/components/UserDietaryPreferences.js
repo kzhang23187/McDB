@@ -44,7 +44,7 @@ const UserDietaryPreferences = () => {
                 <input type="text" name="user_id" onChange={(e) => {
                     setUserID(e.target.value)
                  } }/>
-                 <label> Insert dietary id:</label>
+                 <label> Insert dietary category:</label>
                 <input type="text" name="dietary_id" onChange={(e) => {
                     setDietaryID(e.target.value)
                 }}/>

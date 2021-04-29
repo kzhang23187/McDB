@@ -266,13 +266,17 @@ app.get("/api/get/UDP/:user_id", (require, response) => {
 
 app.post("/api/insert/UDP", (require, response) => {
     const user_id = require.body.user_id;
-    const dietary_id = require.body.dietary_id;
+    const dietary_name = require.body.dietary_id;
 
     const sqlInsert = "INSERT INTO `user_dietary_preference` VALUES (?, ?)";
-    db.query(sqlInsert, [user_id, dietary_id], (err, result) => {
-        console.log("insert");
-        if (err)
-        console.log(err);
+    db.query("SELECT dietary_id FROM dietary_category WHERE category LIKE ?", [dietary_name], (err, result) => {
+        console.log(result);
+        db.query(sqlInsert, [user_id, result[0].dietary_id], (err, result) => {
+            console.log("insert");
+            if (err)
+            console.log(err);
+        })
+
     })
 })
 
