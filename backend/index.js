@@ -32,6 +32,61 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 
+// USER API ENDPOINTS
+app.get("/api/get/user/:user_id", (require, response) => {
+    const user_id = require.params.user_id;
+
+    const sqlSelect = "SELECT * FROM user_profile WHERE user_id = ?";
+    db.query(sqlSelect, [user_id], (err, result) => {
+        console.log("get", user_id, result);
+        response.send(result);
+    });
+});
+
+app.post("/api/insert/user", (require, response) => {
+    const user_id = require.body.user_id;
+    const first_name = require.body.first_name;
+    const last_name = require.body.last_name;
+
+    const sqlInsert = "INSERT INTO `user_profile` (user_id, first_name, last_name) VALUES (?, ?, ?)";
+    db.query(sqlInsert, [user_id, first_name, last_name], (err, result) => {
+        console.log("insert into user_profile");
+        if (err)
+        console.log(err);
+    })
+})
+
+
+app.put("/api/update/user", (require, response) => {
+    const user_id = require.body.user_id;
+    const first_name = require.body.first_name;
+    const last_name = require.body.last_name;
+    const age = require.body.age;
+    const height = require.body.height;
+    const weight = require.body.weight;
+
+    const sqlUpdate = "UPDATE `user_profile` SET `first_name` = ?, `last_name` = ?, `age` = ?, `height` = ?, `weight` = ? WHERE `user_id` = ?";
+    db.query(sqlUpdate, [first_name, last_name, age, height, weight, user_id], (err, result) => {
+        console.log("update");
+        if (err)
+        console.log(err);
+    })
+})
+
+app.delete("/api/delete/user/:user_id", (require, response) => {
+    const user_id = require.params.user_id
+
+    const sqlDelete = "DELETE FROM `user_profile` WHERE `user_id` = ?";
+    db.query(sqlDelete, user_id, (err, result) => {
+        console.log("delete");
+        if (err)
+        console.log(err);
+    });
+});
+
+
+
+
 app.get("/api/get/userId/:userName", (require, response) => {
     const userName = require.params.userName;
     db.query('SELECT user_id FROM user_login WHERE username = ?', [userName], (err, result) => {
