@@ -40,40 +40,40 @@ const Dish = () => {
     const [sodiumMin, setSodiumMin] = useState(0);
     const [sodiumMax, setSodiumMax] = useState(0);
     const getDish = (dishId) => {
-        Axios.get(`http://localhost:3002/api/get/dish/${dishId}`).then((response) => {
+        Axios.get(`https://workshop1-307117.uc.r.appspot.com/api/get/dish/${dishId}`).then((response) => {
           setDishList(response.data)
         })
-        Axios.get(`http://localhost:3002/api/get/dishIngredients/${dishId}`).then((response) => {
+        Axios.get(`https://workshop1-307117.uc.r.appspot.com/api/get/dishIngredients/${dishId}`).then((response) => {
           setDishIngredientList(response.data)
         })
-        Axios.get(`http://localhost:3002/api/get/dishNutrients/${dishId}`).then((response) => {
+        Axios.get(`https://workshop1-307117.uc.r.appspot.com/api/get/dishNutrients/${dishId}`).then((response) => {
           setDishNutrientList(response.data)
         })
-        Axios.get(`http://localhost:3002/api/get/dishCategory/${dishId}`).then((response) => {
+        Axios.get(`https://workshop1-307117.uc.r.appspot.com/api/get/dishCategory/${dishId}`).then((response) => {
           setDishCategoryList(response.data)
         })
     }
     const getDishByCategories = (categories) => {
-        Axios.get(`http://localhost:3002/api/get/dishIsCategory/${categories}`).then((response) => {
+        Axios.get(`https://workshop1-307117.uc.r.appspot.com/api/get/dishIsCategory/${categories}`).then((response) => {
             setDishList(response.data)
         })
     }
     const getDishByIngredients = (ingredients) => {
-        Axios.get(`http://localhost:3002/api/get/dishHasIngredients/${ingredients}`).then((response) => {
+        Axios.get(`https://workshop1-307117.uc.r.appspot.com/api/get/dishHasIngredients/${ingredients}`).then((response) => {
             setDishList(response.data)
         })
     }
     const getDishByNutrient = (nutrients) => {
-        Axios.get(`http://localhost:3002/api/get/dishHasNutrients/${nutrients}`).then((response) => {
+        Axios.get(`https://workshop1-307117.uc.r.appspot.com/api/get/dishHasNutrients/${nutrients}`).then((response) => {
             setDishList(response.data)
         })
     }
     const deleteDish = (dishId) => {
-        Axios.delete(`http://localhost:3002/api/delete/dish/${dishId}`).then((response) => {
+        Axios.delete(`https://workshop1-307117.uc.r.appspot.com/api/delete/dish/${dishId}`).then((response) => {
         })
     }
     const updateDish = (dishId, dishName, dishDescription, dishRecipe) => {
-        Axios.put(`http://localhost:3002/api/update/dish`, {
+        Axios.put(`https://workshop1-307117.uc.r.appspot.com/api/update/dish`, {
             dish_id: dishId,
             dish_name: dishName,
             descrip: dishDescription,
@@ -81,7 +81,7 @@ const Dish = () => {
         })
     }
     const insertSingleDish = (dish_id, dish_name, descrip, recipe) => {
-        Axios.post(`http://localhost:3002/api/insert/dish`, {
+        Axios.post(`https://workshop1-307117.uc.r.appspot.com/api/insert/dish`, {
             dish_id: dish_id,
             dish_name: dish_name,
             descrip: descrip,
@@ -90,19 +90,19 @@ const Dish = () => {
 
     }
     const insertDish = (dish, nutrients, ingredients, categories) => {
-        Axios.post(`http://localhost:3002/api/insert/dish`, {
+        Axios.post(`https://workshop1-307117.uc.r.appspot.com/api/insert/dish`, {
             dish_id: dish.dish_id,
             dish_name: dish.dish_name,
             descrip: dish.descrip,
             recipe: dish.recipe,
         }).then(
-            Axios.post(`http://localhost:3002/api/insert/dishNutrients`, {
+            Axios.post(`https://workshop1-307117.uc.r.appspot.com/api/insert/dishNutrients`, {
                 nutrients: nutrients
             }),
-            Axios.post(`http://localhost:3002/api/insert/dishIngredients`, {
+            Axios.post(`https://workshop1-307117.uc.r.appspot.com/api/insert/dishIngredients`, {
                 ingredients: ingredients
             }),
-            Axios.post(`http://localhost:3002/api/insert/dishCategories`, {
+            Axios.post(`https://workshop1-307117.uc.r.appspot.com/api/insert/dishCategories`, {
                 categories: categories
             })
         )

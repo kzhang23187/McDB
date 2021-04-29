@@ -12,17 +12,17 @@ const Meals = () => {
     const [postUpdate, setPostUpdate] = useState(false);
 
     const filterByUserId = (user_id) => {
-      Axios.get(`http://localhost:3002/api/get/selectedmeals/userid/${user_id}`).then((response) => {
+      Axios.get(`https://workshop1-307117.uc.r.appspot.com/api/get/selectedmeals/userid/${user_id}`).then((response) => {
           setSelectedDishes(response.data)
         })
     }
     const filterByMealDate = (meal_date) => {
-      Axios.get(`http://localhost:3002/api/get/selectedmeals/date/${meal_date}`).then((response) => {
+      Axios.get(`https://workshop1-307117.uc.r.appspot.com/api/get/selectedmeals/date/${meal_date}`).then((response) => {
           setSelectedDishes(response.data)
         })
     }
     const insertSelectedDish = (user_id, dish_id, meal_date, meal_type) => {
-      Axios.post(`http://localhost:3002/api/insert/selectedmeals`,{
+      Axios.post(`https://workshop1-307117.uc.r.appspot.com/api/insert/selectedmeals`,{
         user_id: user_id,
         dish_id: dish_id,
         meal_date: meal_date,
@@ -31,7 +31,7 @@ const Meals = () => {
     }
     const deleteSelectedDish = (user_id, dish_id, meal_date, meal_type) => {
       var data = user_id+ " " + dish_id + " " + meal_date + " " + meal_type;
-      Axios.delete(`http://localhost:3002/api/delete/selectedmeals/${data}`,{
+      Axios.delete(`https://workshop1-307117.uc.r.appspot.com/api/delete/selectedmeals/${data}`,{
         user_id: user_id,
         dish_id: dish_id,
         meal_date: meal_date,
@@ -41,7 +41,7 @@ const Meals = () => {
 
     const updateSelectedDish = (dish_id, user_id, meal_date, meal_type) => {
         var datum = dish_id + " " + user_id + " " + meal_date + " " + meal_type;
-        Axios.put(`http://localhost:3002/api/update/selectedmeals/${datum}`, {
+        Axios.put(`https://workshop1-307117.uc.r.appspot.com/api/update/selectedmeals/${datum}`, {
             dish_id: dish_id,
             user_id: user_id,
             meal_date: meal_date,

@@ -8,27 +8,27 @@ const UserDietaryPreferences = () => {
     const [dietary_id, setDietaryID] = useState("");
 
     const getUserPref = (user_id) => {
-        Axios.get(`http://localhost:3002/api/get/UDP/${user_id}`).then((response) => {
+        Axios.get(`https://workshop1-307117.uc.r.appspot.com/api/get/UDP/${user_id}`).then((response) => {
             setUserList(response.data)
         })
     };
 
     const insertPreference = (user_id, dietary_id) => {
-        Axios.post(`http://localhost:3002/api/insert/UDP`, {
+        Axios.post(`https://workshop1-307117.uc.r.appspot.com/api/insert/UDP`, {
             user_id: user_id,
             dietary_id: dietary_id
         })
     };
 
     const updatePreference = (user_id, dietary_id) => {
-        Axios.put(`http://localhost:3002/api/update/UDP`, {
+        Axios.put(`https://workshop1-307117.uc.r.appspot.com/api/update/UDP`, {
             user_id: user_id,
             dietary_id: dietary_id
         })
     };
 
     const deletePref = (user_id) => {
-        Axios.delete(`http://localhost:3002/api/delete/UDP/${user_id}`);
+        Axios.delete(`https://workshop1-307117.uc.r.appspot.com/api/delete/UDP/${user_id}`);
     };
 
     return (

@@ -32,6 +32,12 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 
+app.get("/api/get/userId/:userName", (require, response) => {
+    const userName = require.params.userName;
+    db.query('SELECT user_id FROM user_login WHERE username = ?', [userName], (err, result) => {
+        response.send(result);
+    })
+});
 app.get("/api/get/userGoal/:userName", (require, response) => {
     const userName = require.params.userName;
     db.query('SELECT * FROM goal g JOIN user_login ul ON g.user_id = ul.user_id WHERE ul.username = ?', [userName], (err, result) => {
@@ -368,6 +374,6 @@ app.get("/api/get/home/selectedmeals/:username", (require, response) => {
 });
 //
 
-app.listen(3002, () => {
-    console.log("running on port 3002");
+app.listen(8080, () => {
+    console.log("running on port 8080");
 })
